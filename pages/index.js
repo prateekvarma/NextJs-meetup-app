@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import MeetupList from "../components/meetups/MeetupList";
 
 const DUMMY_MEETUPS = [
@@ -6,17 +5,20 @@ const DUMMY_MEETUPS = [
   { id: 'm2', title: 'Second meetup', image: 'https://images.pexels.com/photos/258804/pexels-photo-258804.jpeg?auto=compress&cs=tinysrgb&w=600', address: '516 Goodwill Rd, Glittery Mountain, AA', description: 'This is the second meetup' }
 ];
 
-function HomePage() {
-  const [loadedMeetups, setLoadedMeetups] = useState([])
-
-  useEffect(() => {
-    //simulating an external API call
-    setLoadedMeetups(DUMMY_MEETUPS)
-  }, []);
+function HomePage(props) {
 
   return (
-      <MeetupList meetups={loadedMeetups} />
+      <MeetupList meetups={props.meetups} />
     )
+}
+
+export async function getStaticProps() {
+  // fetch data from an API
+  return {
+    props: {
+      meetups: DUMMY_MEETUPS
+    }
+  }
 }
 
 export default HomePage;
