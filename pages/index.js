@@ -12,7 +12,11 @@ function HomePage(props) {
     )
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps(context) {
+  // This function is only applicable when you need to pull data on every single request. Still is a SSG.
+  const req = context.req;
+  const res = context.res;
+
   // fetch data from an API
   return {
     props: {
@@ -20,5 +24,14 @@ export async function getStaticProps() {
     }
   }
 }
+
+// export async function getStaticProps() {
+//   // fetch data from an API
+//   return {
+//     props: {
+//       meetups: DUMMY_MEETUPS
+//     }
+//   }
+// }
 
 export default HomePage;
