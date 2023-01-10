@@ -2,12 +2,12 @@ import { MongoClient } from "mongodb";
 
 import MeetupDetail from "../../components/meetups/MeetupDetail";
 
-function MeetupDetails() {
+function MeetupDetails(props) {
     return <MeetupDetail 
-                title="dummy title" 
-                address='dummy address' 
-                image="https://images.pexels.com/photos/69371/pexels-photo-69371.jpeg?auto=compress&cs=tinysrgb&w=600" 
-                description="Dummy desc" 
+                title={props.meetupData.title} 
+                address={props.meetupData.address} 
+                image={props.meetupData.image}
+                description={props.meetupData.description} 
             />
 }
 
@@ -16,7 +16,9 @@ export async function getStaticPaths() {
     const db = client.db();
     const meetupsCollection = db.collection('meetups');
 
-    const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray(); //only return the ids on eahc doc
+    const meetups = await meetupsCollection.find({}, { _id: 1 }).toArray(); //only return the ids on each doc
+    client.close();
+
     return {
         fallback: false,
         paths: meetups.map((meetup) => {
@@ -30,17 +32,16 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     //fetch data for a single meetup
     const meetupId = context.params.meetupId;
-    console.log('Thy Id: ', meetupId);
+    const client = await MongoClient.connect('xxx-mongoUrl-xxx');
+    const db = client.db();
+    const meetupsCollection = db.collection('meetups');
+
+    const selectedMeetup = await meetupsCollection.findOne({ _id: meetupId }).toArray(); //the meetupId comes from the URL params
+    client.close();
 
     return {
         props: {
-        meetupData: {
-            id: meetupId,
-            title: "dummy title", 
-            address: "dummy address",
-            image: "https://images.pexels.com/photos/69371/pexels-photo-69371.jpeg?auto=compress&cs=tinysrgb&w=600",
-            description: "Dummy desc"
-            }
+        meetupData: selectedMeetup
         }
     }
 }
