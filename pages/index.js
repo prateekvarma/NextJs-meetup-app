@@ -1,3 +1,5 @@
+import { MongoClient } from "mongodb";
+
 import MeetupList from "../components/meetups/MeetupList";
 
 const DUMMY_MEETUPS = [
@@ -28,9 +30,24 @@ function HomePage(props) {
 // Below 'getStaticProps' works better here, as the content won't be as dynamic
 export async function getStaticProps() {
   // fetch data from an API
+  const client = await MongoClient.connect('xxx-mongoUrl-xxx');
+  const db = client.db();
+  const meetupsCollection = db.collection('meetups');
+
+  const meetups = await meetupsCollection.find().toArray(); //find() by default finds all collections
+
+  client.close();
+
   return {
     props: {
-      meetups: DUMMY_MEETUPS
+      meetups: meetups.map((meetup) => {
+        return {
+          title: meetup.title,
+          address: meetup.address,
+          image: meetup.image,
+          id: meetup._id.toString() //this converts the strange MongoDB id-object to string
+        }
+      })
     }
   }
 }
