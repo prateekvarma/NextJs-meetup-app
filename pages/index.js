@@ -1,16 +1,17 @@
+import Head from "next/head"; // allows you to add meta tags to head
 import { MongoClient } from "mongodb";
 
 import MeetupList from "../components/meetups/MeetupList";
 
-const DUMMY_MEETUPS = [
-  { id: 'm1', title: 'First meetup', image: 'https://images.pexels.com/photos/167385/pexels-photo-167385.jpeg?auto=compress&cs=tinysrgb&w=600', address: '515 Goodwill Rd, Round Island, AA', description: 'This is the first meetup' },
-  { id: 'm2', title: 'Second meetup', image: 'https://images.pexels.com/photos/258804/pexels-photo-258804.jpeg?auto=compress&cs=tinysrgb&w=600', address: '516 Goodwill Rd, Glittery Mountain, AA', description: 'This is the second meetup' }
-];
-
 function HomePage(props) {
-
   return (
+    <>
+      <Head>
+        <title>React Meetups</title>
+        <meta name="description" content="Browse through a list of active React meetups" />
+      </Head>
       <MeetupList meetups={props.meetups} />
+    </>
     )
 }
 
